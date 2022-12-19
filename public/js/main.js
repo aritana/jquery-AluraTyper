@@ -19,7 +19,7 @@ function atualizaTamanhoFrase() {
 }
 
 function inicializaContadores() {
-    campo.on("input", function () {        
+    campo.on("input", function () {
         var conteudo = campo.val();
 
         var qtdPalavras = conteudo.split(/\S+/).length - 1;
@@ -40,48 +40,70 @@ function inicializaCronometro() {
             $("#tempo-digitacao").text(tempoRestante);
 
             if (tempoRestante < 1) {
-                campo.attr("disabled", true);
                 clearInterval(cronometroId);
-                $("#botao-reiniciar").attr("disabled", false);
-                campo.toggleClass("campo-desativado");
+                finalizaJogo();
             }
-
         }, 1000)
     })
 }
 
+function finalizaJogo() {
+    campo.attr("disabled", true);
+    $("#botao-reiniciar").attr("disabled", false);
+    campo.toggleClass("campo-desativado");
+    inserePlacar();
+}
 
-function inicializaMarcador(){
+function inicializaMarcador() {
     var frase = $(".phrase").text();
-   
-    campo.on("input",function(){
-        //campo.attr("border-color","green");
-        var digitando = campo.val();
-        var comparavel = frase.substring(0,digitando.length);
 
-        if(digitando.localeCompare(comparavel)==0){
-            campo.addClass("borda-verde"); 
+    campo.on("input", function () {
+        // campo.attr("border-color","green");
+        var digitado = campo.val().trim();
+        var comparavel = frase.substring(0, digitado.length);
+
+
+        console.log("digitado:" + digitado);
+        console.log("comparavel:" + comparavel);
+
+
+        if (digitado == comparavel) {
             campo.removeClass("borda-vermelha");
+            campo.addClass("borda-verde");
             console.log("certo");
-        }else{
+        } else {
+            campo.removeClass("borda-verde");
             campo.addClass("borda-vermelha");
-            campo.removeClass("borda-verde"); 
-            console.log("errad");
+            console.log("errado");
         }
     })
 }
 
 function reiniciaJogo() {
-  
     campo.attr("disabled", false);
     campo.val("");
     $("#contador-palavras").text(0);
     $("#contador-caracteres").text(0);
     $("#tempo-digitacao").text(tempoInicial);
-    inicializaCronometro();   
+    inicializaCronometro();
     campo.toggleClass("campo-desativado");
-    campo.removeClass("borda-vermelha"); 
-    campo.removeClass("borda-verde"); 
+    campo.removeClass("borda-vermelha");
+    campo.removeClass("borda-verde");
 }
 
-$("#botao-reiniciar").on("click",reiniciaJogo);
+function inserePlacar() {
+    var tbodyTable = $(".placar").find("tbody");
+    var user = "Aritana";
+    var numPalavas = $("#contador-palavras").text();
+
+    console.log(numPalavas);
+    
+    var row = "<tr>" +
+                  "<td>"+ user + "</td>"+
+                  "<td>"+ numPalavas + "</td>"+
+        "</tr>";
+    tbodyTable.append(row);
+
+}
+
+$("#botao-reiniciar").on("click", reiniciaJogo);
