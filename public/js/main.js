@@ -62,19 +62,12 @@ function inicializaMarcador() {
         var digitado = campo.val().trim();
         var comparavel = frase.substring(0, digitado.length);
 
-
-        console.log("digitado:" + digitado);
-        console.log("comparavel:" + comparavel);
-
-
         if (digitado == comparavel) {
             campo.removeClass("borda-vermelha");
             campo.addClass("borda-verde");
-            console.log("certo");
         } else {
             campo.removeClass("borda-verde");
             campo.addClass("borda-vermelha");
-            console.log("errado");
         }
     })
 }
@@ -95,15 +88,33 @@ function inserePlacar() {
     var tbodyTable = $(".placar").find("tbody");
     var user = "Aritana";
     var numPalavas = $("#contador-palavras").text();
-
-    console.log(numPalavas);
-    
-    var row = "<tr>" +
-                  "<td>"+ user + "</td>"+
-                  "<td>"+ numPalavas + "</td>"+
-        "</tr>";
+    var row = novaLinha(user, numPalavas);
+    row.find(".botao-remover").on("click",removerLinhaTabela);
     tbodyTable.append(row);
-
 }
+
+function novaLinha(user, numPalavras) {
+    var row = $("<tr>");//elemento html
+    var userCell = $("<td>").text(user);
+    var numberWordsCell = $("<td>").text(numPalavras);
+    var removeCell = $("<td>");
+    var link = $("<a>").addClass("botao-remover").attr("href", "#");
+    var icone = $("<i>").addClass("small").addClass("material-icons").text("delete");
+
+    link.append(icone);
+    removeCell.append(link);
+    row.append(userCell)
+        .append(numberWordsCell)
+        .append(removeCell);
+
+    return row;   
+}
+
+function removerLinhaTabela() {
+    event.preventDefault();//nao segue o evento #
+    console.log("clicado");
+    $(this).parent().parent().remove();
+}
+
 
 $("#botao-reiniciar").on("click", reiniciaJogo);
